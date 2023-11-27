@@ -28,6 +28,8 @@ class LoginViewModel @Inject constructor(
 
     fun login(email: String, password: String, navController: NavHostController) {
         viewModelScope.launch {
+            navController.navigate(Screen.Home.route)
+
             try {
                 val response = authRepository.login(password, email)
                 if (response.isSuccessful) {
@@ -35,7 +37,6 @@ class LoginViewModel @Inject constructor(
                     if (loginResponse?.accessToken != null) {
                         _loginResponse.value = loginResponse
                         dataStoreManager.saveToken(loginResponse.accessToken)
-                        navController.navigate(Screen.Home.route)
                         return@launch
                     }
                 }
