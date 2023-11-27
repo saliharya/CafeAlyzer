@@ -18,6 +18,7 @@ import com.cafealyzer.cafealyzer.ui.screen.HistoryScreen
 import com.cafealyzer.cafealyzer.ui.screen.HomeScreen
 import com.cafealyzer.cafealyzer.ui.screen.MapsScreen
 import com.cafealyzer.cafealyzer.ui.screen.ProfileScreen
+import com.cafealyzer.cafealyzer.ui.screen.RegisterScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -35,8 +36,7 @@ fun Navigation() {
             }
         },
     ) { innerPadding ->
-        NavHost(
-            navController = navController,
+        NavHost(navController = navController,
             startDestination = Screen.Home.route,
             modifier = Modifier.padding(innerPadding),
             enterTransition = {
@@ -46,8 +46,7 @@ fun Navigation() {
             exitTransition = {
                 // you can change whatever you want transition
                 ExitTransition.None
-            }
-        ) {
+            }) {
             composable(Screen.Home.route) {
                 HomeScreen(onCariClick = {
                     navController.navigate(Screen.Maps.route)
@@ -61,6 +60,9 @@ fun Navigation() {
             }
             composable(Screen.Maps.route) {
                 MapsScreen()
+            }
+            composable(Screen.Register.route) {
+                RegisterScreen(navController)
             }
         }
     }
