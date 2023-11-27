@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -16,11 +17,15 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -45,9 +50,11 @@ fun CafeItem(
         Column {
             Image(
                 painter = rememberAsyncImagePainter(
-                    ImageRequest.Builder(LocalContext.current).data(
+                    ImageRequest.Builder(LocalContext.current)
+                        .data(
                             data = cafe.image
-                        ).apply(block = fun ImageRequest.Builder.() {
+                        )
+                        .apply(block = fun ImageRequest.Builder.() {
                             crossfade(true)
                         }).build()
                 ),
@@ -92,7 +99,8 @@ fun CafeItemPreview() {
                 "https://lh5.googleusercontent.com/p/AF1QipNAKbxY9RRSSeGEBsWV86s1zj9wGxA8OE9aRega=w426-h240-k-no",
                 "Cecemuwe Cafe and Space - Senayan",
                 "4,7 (1.036)",
-            ), modifier = Modifier.padding(horizontal = 8.dp)
+            ),
+            modifier = Modifier.padding(horizontal = 8.dp)
         )
     }
 }

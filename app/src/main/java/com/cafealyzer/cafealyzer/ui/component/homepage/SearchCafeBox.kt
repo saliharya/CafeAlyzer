@@ -41,7 +41,9 @@ fun SearchCafeBox(onButtonClick: () -> Unit) {
             Spacer(modifier = Modifier.width(8.dp))
 
             Button(
-                onClick = onButtonClick, modifier = Modifier.align(Alignment.CenterVertically)
+                onClick = onButtonClick,
+                modifier = Modifier
+                    .align(Alignment.CenterVertically)
             ) {
                 Text(text = "Cari")
             }

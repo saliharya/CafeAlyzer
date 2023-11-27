@@ -27,7 +27,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.cafealyzer.cafealyzer.R
 import com.cafealyzer.cafealyzer.ui.navigation.Screen
@@ -40,7 +39,6 @@ fun LoginScreen(navController: NavHostController) {
     var password by remember { mutableStateOf("") }
 
     val loginViewModel: LoginViewModel = hiltViewModel()
-//    val isLoading by loginViewModel.isLoadingLiveData.observeAsState(false)
 
     Column(
         modifier = Modifier
@@ -57,7 +55,7 @@ fun LoginScreen(navController: NavHostController) {
         OutlinedTextField(
             value = email,
             onValueChange = { email = it },
-            label = { Text("Email") },
+            label = { Text("Username") },
             singleLine = true,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
         )
@@ -71,7 +69,7 @@ fun LoginScreen(navController: NavHostController) {
         )
         Spacer(modifier = Modifier.height(16.dp))
         Button(onClick = {
-            loginViewModel.login(email, password, navController)
+            navController.navigate(Screen.Home.route)
         }) { Text("Login") }
         Spacer(modifier = Modifier.height(16.dp))
         Row {

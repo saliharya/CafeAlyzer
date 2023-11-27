@@ -14,8 +14,11 @@ fun SectionText(
     modifier: Modifier = Modifier,
 ) {
     Text(
-        text = title, style = MaterialTheme.typography.headlineSmall.copy(
+        text = title,
+        style = MaterialTheme.typography.headlineSmall.copy(
             fontWeight = FontWeight.ExtraBold
-        ), modifier = modifier.padding(horizontal = 8.dp, vertical = 8.dp)
+        ),
+        modifier = modifier
+            .padding(horizontal = 8.dp, vertical = 8.dp)
     )
 }

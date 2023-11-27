@@ -1,7 +1,18 @@
 package com.cafealyzer.cafealyzer
 
-import android.app.Application
-import dagger.hilt.android.HiltAndroidApp
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.tooling.preview.Preview
+import com.cafealyzer.cafealyzer.ui.theme.CafeAlyzerTheme
 
-@HiltAndroidApp
-class CafeAlyzerApp : Application()
+@Composable
+fun CafeAlyzerApp() {
+    Navigation()
+}
+
+@Preview
+@Composable
+fun CafeAlyzerAppPreview() {
+    CafeAlyzerTheme {
+        CafeAlyzerApp()
+    }
+}

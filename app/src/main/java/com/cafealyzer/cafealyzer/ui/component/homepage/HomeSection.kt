@@ -21,10 +21,13 @@ fun HomeSection(
 ) {
     Column(modifier) {
         Row(
-            verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(8.dp)
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(8.dp)
         ) {
             Icon(
-                imageVector = Icons.Default.LocationOn, contentDescription = null, tint = Color.Red
+                imageVector = Icons.Default.LocationOn,
+                contentDescription = null,
+                tint = Color.Red
             )
             SectionText(title)
         }
