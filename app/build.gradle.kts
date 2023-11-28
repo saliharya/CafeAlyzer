@@ -79,23 +79,20 @@ dependencies {
     //hilt DI
     implementation("com.google.dagger:hilt-android:2.48.1")
     kapt("com.google.dagger:hilt-android-compiler:2.48.1")
-    //raamcosta for compose navigation
-    implementation("io.github.raamcosta.compose-destinations:core:1.9.54")
-    ksp("io.github.raamcosta.compose-destinations:ksp:1.9.54")
     //accompanist-navigation-material
-    implementation("com.google.accompanist:accompanist-navigation-material:0.23.0")
+    implementation("com.google.accompanist:accompanist-navigation-material:0.32.0")
     //room database
     val roomVersion = "2.6.0"
     implementation("androidx.room:room-runtime:$roomVersion")
     implementation("androidx.room:room-ktx:$roomVersion")
     //noinspection KaptUsageInsteadOfKsp
     kapt("androidx.room:room-compiler:$roomVersion")
-    //AsyncImage
-    implementation("io.coil-kt:coil-compose:2.2.2")
-    //navigation
-    implementation("androidx.navigation:navigation-compose:2.7.5")
-    implementation("androidx.navigation:navigation-runtime-ktx:2.7.5")
-    androidTestImplementation("androidx.navigation:navigation-testing:2.6.0")
+    //retrofit
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    //datastore
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
 
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.2")
     implementation("androidx.compose.runtime:runtime-livedata:1.5.4")
