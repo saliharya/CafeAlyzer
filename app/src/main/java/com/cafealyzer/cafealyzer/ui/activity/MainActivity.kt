@@ -7,22 +7,33 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import com.cafealyzer.cafealyzer.CafeAlyzerApp
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.compose.rememberNavController
+import com.cafealyzer.cafealyzer.Navigation
+import com.cafealyzer.cafealyzer.local.DataStoreManager
 import com.cafealyzer.cafealyzer.ui.theme.CafeAlyzerTheme
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    private lateinit var dataStoreManager: DataStoreManager
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContent {
-            CafeAlyzerTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    CafeAlyzerApp()
+
+        dataStoreManager = DataStoreManager(this)
+
+        lifecycleScope.launch {
+            val token = dataStoreManager.getToken()
+            setContent {
+                CafeAlyzerTheme {
+                    Surface(
+                        modifier = Modifier.fillMaxSize(),
+                        color = MaterialTheme.colorScheme.background
+                    ) {
+                        val navController = rememberNavController()
+                        Navigation(token, navController)
+                    }
                 }
             }
         }

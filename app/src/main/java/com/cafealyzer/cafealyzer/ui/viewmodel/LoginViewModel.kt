@@ -17,8 +17,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val authRepository: AuthRepository,
-    private val dataStoreManager: DataStoreManager
+    private val authRepository: AuthRepository, private val dataStoreManager: DataStoreManager
 ) : ViewModel() {
     private val _loginSuccess = MutableLiveData<Boolean>()
     val loginSuccess: LiveData<Boolean>
