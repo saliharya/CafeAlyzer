@@ -1,9 +1,10 @@
 package com.cafealyzer.cafealyzer.remote.response
 
+import com.cafealyzer.cafealyzer.model.Token
 import com.google.gson.annotations.SerializedName
 
 data class LoginResponse(
-    val description: String,
-    @SerializedName("status_code") val statusCode: Int,
-    val token: String
+    @SerializedName("status_code") val statusCode: Int?,
+    @SerializedName("description") val description: String?,
+    @SerializedName("token") val token: Token?
 )

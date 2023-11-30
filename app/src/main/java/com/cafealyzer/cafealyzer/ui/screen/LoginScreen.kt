@@ -16,7 +16,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -39,6 +41,15 @@ fun LoginScreen(navController: NavHostController) {
     var password by remember { mutableStateOf("") }
 
     val loginViewModel: LoginViewModel = hiltViewModel()
+    val isLoginSuccess by loginViewModel.loginSuccess.observeAsState()
+
+    LaunchedEffect(isLoginSuccess) {
+        if (isLoginSuccess == true) {
+            navController.navigate(Screen.Home.route) {
+                popUpTo(Screen.Login.route) { inclusive = true }
+            }
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -69,7 +80,7 @@ fun LoginScreen(navController: NavHostController) {
         )
         Spacer(modifier = Modifier.height(16.dp))
         Button(onClick = {
-            navController.navigate(Screen.Home.route)
+            loginViewModel.loginUser(email, password)
         }) { Text("Login") }
         Spacer(modifier = Modifier.height(16.dp))
         Row {
