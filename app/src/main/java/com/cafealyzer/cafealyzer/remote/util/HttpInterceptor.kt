@@ -4,6 +4,8 @@ import com.cafealyzer.cafealyzer.local.DataStoreManager
 import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
 import okhttp3.Response
+import okhttp3.logging.HttpLoggingInterceptor
+import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -11,14 +13,22 @@ import javax.inject.Singleton
 class HttpInterceptor @Inject constructor(
     private val dataStoreManager: DataStoreManager
 ) : Interceptor {
-    override fun intercept(chain: Interceptor.Chain): Response = chain.run {
+
+    private val loggingInterceptor = HttpLoggingInterceptor { message ->
+        Timber.tag("OkHttp").d(message)
+    }.apply {
+        level = HttpLoggingInterceptor.Level.BODY
+        redactHeader("Authorization")
+        redactHeader("Cookie")
+    }
+
+    override fun intercept(chain: Interceptor.Chain): Response {
         val token = runBlocking { dataStoreManager.getToken() }
-        val requestBuilder = request().newBuilder()
+        val requestBuilder = chain.request().newBuilder()
 
         if (!token.isNullOrEmpty()) {
             requestBuilder.addHeader("Authorization", "Bearer $token")
         }
-
-        proceed(requestBuilder.build())
+        return loggingInterceptor.intercept(chain)
     }
 }
