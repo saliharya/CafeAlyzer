@@ -13,23 +13,31 @@ import retrofit2.Response
 import javax.inject.Inject
 
 @HiltViewModel
-class RegisterViewModel @Inject constructor(private val authRepository: AuthRepository) : ViewModel() {
+class RegisterViewModel @Inject constructor(private val authRepository: AuthRepository) :
+    ViewModel() {
+    private val _registerSuccess = MutableLiveData<Boolean>()
+    val registerSuccess: LiveData<Boolean>
+        get() = _registerSuccess
 
-    fun registerUser(username: String, email: String, password: String): LiveData<RegistrationResponse> {
-        val registrationRequest = RegistrationRequest(email, password, username)
+    fun registerUser(
+        email: String, username: String, password: String
+    ): LiveData<RegistrationResponse> {
+        val registerRequest = RegistrationRequest(email, password, username)
         val liveDataResponse = MutableLiveData<RegistrationResponse>()
-        authRepository.registerUser(registrationRequest).enqueue(object :
-            Callback<RegistrationResponse> {
-            override fun onResponse(call: Call<RegistrationResponse>, response: Response<RegistrationResponse>) {
-                if (response.isSuccessful) {
-                    response.body()?.let { liveDataResponse.postValue(it) }
-                }
-            }
+        authRepository.registerUser(registerRequest)
+            .enqueue(object : Callback<RegistrationResponse> {
 
-            override fun onFailure(call: Call<RegistrationResponse>, t: Throwable) {
-                // Handle failure
-            }
-        })
+                override fun onResponse(
+                    call: Call<RegistrationResponse>, response: Response<RegistrationResponse>
+                ) {
+                    _registerSuccess.value = response.isSuccessful
+                }
+
+                override fun onFailure(call: Call<RegistrationResponse>, t: Throwable) {
+                    _registerSuccess.postValue(false)
+
+                }
+            })
         return liveDataResponse
     }
 }
