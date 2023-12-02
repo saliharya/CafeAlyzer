@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -24,6 +25,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -43,6 +45,7 @@ fun RegisterScreen(navController: NavHostController) {
 
     val registerViewModel: RegisterViewModel = hiltViewModel()
     val isRegisterSuccess by registerViewModel.registerSuccess.observeAsState()
+    val isLoading by registerViewModel.isLoading.observeAsState()
 
     LaunchedEffect(isRegisterSuccess) {
         if (isRegisterSuccess == true) {
@@ -82,7 +85,10 @@ fun RegisterScreen(navController: NavHostController) {
         )
         Spacer(modifier = Modifier.height(16.dp))
         Button(onClick = { registerViewModel.registerUser(email, username, password) }) {
-            Text("Register")
+            when (isLoading) {
+                true -> CircularProgressIndicator(color = Color.White)
+                else -> Text("Register")
+            }
         }
         Spacer(modifier = Modifier.height(16.dp))
         Row {

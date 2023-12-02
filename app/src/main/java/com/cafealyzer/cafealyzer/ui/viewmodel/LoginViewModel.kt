@@ -17,18 +17,21 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val authRepository: AuthRepository,
-    private val dataStoreManager: DataStoreManager
+    private val authRepository: AuthRepository, private val dataStoreManager: DataStoreManager
 ) : ViewModel() {
     private val _loginSuccess = MutableLiveData<Boolean>()
-    val loginSuccess: LiveData<Boolean>
-        get() = _loginSuccess
+    val loginSuccess: LiveData<Boolean> get() = _loginSuccess
+
+    private val _isLoading = MutableLiveData<Boolean>()
+    val isLoading: LiveData<Boolean> get() = _isLoading
 
     fun loginUser(username: String, password: String): LiveData<LoginResponse> {
+        _isLoading.value = true
         val loginRequest = LoginRequest(password, username)
         val liveDataResponse = MutableLiveData<LoginResponse>()
         authRepository.loginUser(loginRequest).enqueue(object : Callback<LoginResponse> {
             override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
+                _isLoading.value = false
                 _loginSuccess.value = response.isSuccessful
                 if (response.isSuccessful) {
                     val token = response.body()?.token.toString()
@@ -41,6 +44,7 @@ class LoginViewModel @Inject constructor(
             }
 
             override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
+                _isLoading.value = false
                 _loginSuccess.postValue(false)
             }
         })
