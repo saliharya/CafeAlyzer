@@ -15,6 +15,8 @@ import javax.inject.Inject
 @HiltViewModel
 class RegisterViewModel @Inject constructor(private val authRepository: AuthRepository) :
     ViewModel() {
+    private val _isLoading = MutableLiveData<Boolean>()
+    val isLoading: LiveData<Boolean> get() = _isLoading
     private val _registerSuccess = MutableLiveData<Boolean>()
     val registerSuccess: LiveData<Boolean>
         get() = _registerSuccess
@@ -22,6 +24,7 @@ class RegisterViewModel @Inject constructor(private val authRepository: AuthRepo
     fun registerUser(
         email: String, username: String, password: String
     ): LiveData<RegistrationResponse> {
+        _isLoading.postValue(true)
         val registerRequest = RegistrationRequest(email, password, username)
         val liveDataResponse = MutableLiveData<RegistrationResponse>()
         authRepository.registerUser(registerRequest)
@@ -30,12 +33,13 @@ class RegisterViewModel @Inject constructor(private val authRepository: AuthRepo
                 override fun onResponse(
                     call: Call<RegistrationResponse>, response: Response<RegistrationResponse>
                 ) {
+                    _isLoading.postValue(false)
                     _registerSuccess.value = response.isSuccessful
                 }
 
                 override fun onFailure(call: Call<RegistrationResponse>, t: Throwable) {
                     _registerSuccess.postValue(false)
-
+                    _isLoading.postValue(false)
                 }
             })
         return liveDataResponse
