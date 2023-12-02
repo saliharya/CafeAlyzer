@@ -9,13 +9,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.rememberNavController
 import com.cafealyzer.cafealyzer.Navigation
 import com.cafealyzer.cafealyzer.local.DataStoreManager
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
-import com.cafealyzer.cafealyzer.CafeAlyzerApp
 import com.cafealyzer.cafealyzer.ui.theme.CafeAlyzerTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -33,6 +32,7 @@ class MainActivity : ComponentActivity() {
         lifecycleScope.launch {
             val token = dataStoreManager.getToken()
             setContent {
+                getLocationPermission()
                 CafeAlyzerTheme {
                     Surface(
                         modifier = Modifier.fillMaxSize(),
@@ -48,15 +48,14 @@ class MainActivity : ComponentActivity() {
 
     private fun getLocationPermission() {
         if (ContextCompat.checkSelfPermission(
-                this,
-                android.Manifest.permission.ACCESS_FINE_LOCATION
-            )
-            == PackageManager.PERMISSION_GRANTED
+                this, android.Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
         ) {
             locationPermissionGranted.value = true
         } else {
             ActivityCompat.requestPermissions(
-                this, arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),
+                this,
+                arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),
                 PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION
             )
         }

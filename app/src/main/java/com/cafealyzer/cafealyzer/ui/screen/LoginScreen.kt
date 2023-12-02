@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -24,6 +25,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -42,6 +44,7 @@ fun LoginScreen(navController: NavHostController) {
 
     val loginViewModel: LoginViewModel = hiltViewModel()
     val isLoginSuccess by loginViewModel.loginSuccess.observeAsState()
+    val isLoading by loginViewModel.isLoading.observeAsState()
 
     LaunchedEffect(isLoginSuccess) {
         if (isLoginSuccess == true) {
@@ -81,7 +84,12 @@ fun LoginScreen(navController: NavHostController) {
         Spacer(modifier = Modifier.height(16.dp))
         Button(onClick = {
             loginViewModel.loginUser(email, password)
-        }) { Text("Login") }
+        }) {
+            when (isLoading) {
+                true -> CircularProgressIndicator(color = Color.White)
+                else -> Text("Login")
+            }
+        }
         Spacer(modifier = Modifier.height(16.dp))
         Row {
             Text(text = "Didn't have an account?")
