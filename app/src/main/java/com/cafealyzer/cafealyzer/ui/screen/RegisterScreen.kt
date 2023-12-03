@@ -33,10 +33,15 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.cafealyzer.cafealyzer.R
+import com.cafealyzer.cafealyzer.ui.component.authscreen.AppIcon
+import com.cafealyzer.cafealyzer.ui.component.authscreen.EmailTextField
+import com.cafealyzer.cafealyzer.ui.component.authscreen.LoginSection
+import com.cafealyzer.cafealyzer.ui.component.authscreen.PasswordTextField
+import com.cafealyzer.cafealyzer.ui.component.authscreen.RegisterButton
+import com.cafealyzer.cafealyzer.ui.component.authscreen.UsernameTextField
 import com.cafealyzer.cafealyzer.ui.navigation.Screen
 import com.cafealyzer.cafealyzer.ui.viewmodel.RegisterViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegisterScreen(navController: NavHostController) {
     var username by remember { mutableStateOf("") }
@@ -61,41 +66,17 @@ fun RegisterScreen(navController: NavHostController) {
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Image(
-            painter = painterResource(id = R.mipmap.ic_launcher_foreground),
-            contentDescription = "App Launcher Icon",
-            modifier = Modifier.size(250.dp)
-        )
-        OutlinedTextField(value = username,
-            onValueChange = { username = it },
-            label = { Text("Username") })
+        AppIcon()
+        UsernameTextField(username = username) { username = it }
         Spacer(modifier = Modifier.height(16.dp))
-        OutlinedTextField(value = email,
-            onValueChange = { email = it },
-            label = { Text("Email") },
-            singleLine = true,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
-        )
+        EmailTextField(email = email) { email = it }
         Spacer(modifier = Modifier.height(16.dp))
-        OutlinedTextField(value = password,
-            onValueChange = { password = it },
-            label = { Text("Password") },
-            visualTransformation = PasswordVisualTransformation(),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
-        )
+        PasswordTextField(password = password) { password = it }
         Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = { registerViewModel.registerUser(email, username, password) }) {
-            when (isLoading) {
-                true -> CircularProgressIndicator(color = Color.White)
-                else -> Text("Register")
-            }
-        }
+        RegisterButton(isLoading = isLoading, onClick = {
+            registerViewModel.registerUser(email, username, password)
+        })
         Spacer(modifier = Modifier.height(16.dp))
-        Row {
-            Text(text = "Already have an account?")
-            Text(text = " Login ", modifier = Modifier.clickable {
-                navController.navigate(Screen.Login.route)
-            }, color = MaterialTheme.colorScheme.primary)
-        }
+        LoginSection(navController = navController)
     }
 }
