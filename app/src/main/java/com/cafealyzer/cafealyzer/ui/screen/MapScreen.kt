@@ -22,7 +22,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.cafealyzer.cafealyzer.ui.activity.MainActivity
-import com.cafealyzer.cafealyzer.ui.component.mapscreen.CustomSearchBar
+import com.cafealyzer.cafealyzer.ui.component.mapscreen.SearchBar
 import com.cafealyzer.cafealyzer.ui.viewmodel.MapsViewModel
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.CameraPosition
@@ -99,7 +99,7 @@ fun MapsScreen() {
             Column {
                 var searchText by remember { mutableStateOf("") }
 
-                CustomSearchBar(
+                SearchBar(
                     query = searchText,
                     onQueryChange = {
                         searchText = it

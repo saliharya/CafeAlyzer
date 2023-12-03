@@ -1,5 +1,6 @@
 package com.cafealyzer.cafealyzer.remote.util
 
+import android.util.Log
 import com.cafealyzer.cafealyzer.local.DataStoreManager
 import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
@@ -11,7 +12,7 @@ import javax.inject.Singleton
 
 @Singleton
 class HttpInterceptor @Inject constructor(
-    private val dataStoreManager: DataStoreManager
+    private val dataStoreManager: DataStoreManager,
 ) : Interceptor {
 
     private val loggingInterceptor = HttpLoggingInterceptor { message ->
@@ -27,8 +28,14 @@ class HttpInterceptor @Inject constructor(
         val requestBuilder = chain.request().newBuilder()
 
         if (!token.isNullOrEmpty()) {
-            requestBuilder.addHeader("Authorization", "Bearer $token")
+            requestBuilder.addHeader(
+                "Authorization",
+                "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Imtlbm5lZHkiLCJleHBpcmVzIjoxNzA0MjI1OTA0Ljk0MTYzOTd9.H7TgTykKcxs9SmGaf0OB0TfkogJeQP7lvmC72d-HDy8"
+            )
+            Log.d("HttpInterceptor", "Token $token")
         }
-        return loggingInterceptor.intercept(chain)
+        val request = requestBuilder.build()
+        return chain.proceed(request)
+        // return loggingInterceptor.intercept(chain)
     }
 }
