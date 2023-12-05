@@ -57,7 +57,13 @@ fun Navigation(token: String?, navController: NavHostController) {
                 HistoryScreen()
             }
             composable(Screen.Profile.route) {
-                ProfileScreen(userViewModel)
+                ProfileScreen(userViewModel = userViewModel, onLogoutClick = {
+                    navController.navigate(Screen.Login.route) {
+                        popUpTo(Screen.Home.route) {
+                            inclusive = true
+                        }
+                    }
+                })
             }
             composable(Screen.Maps.route) {
                 MapsScreen()

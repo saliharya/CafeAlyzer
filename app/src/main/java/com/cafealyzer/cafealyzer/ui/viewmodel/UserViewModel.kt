@@ -52,4 +52,8 @@ class UserViewModel @Inject constructor(
         val token = runBlocking { dataStoreManager.getToken() }
         return !token.isNullOrEmpty()
     }
+
+    fun logoutUser() {
+        runBlocking { dataStoreManager.clearToken() }
+    }
 }
