@@ -34,10 +34,10 @@ class LoginViewModel @Inject constructor(
                 _isLoading.value = false
                 _loginSuccess.value = response.isSuccessful
                 if (response.isSuccessful) {
-                    val token = response.body()?.token.toString()
+                    val token = response.body()?.token
                     token.let {
                         viewModelScope.launch {
-                            dataStoreManager.saveToken(token)
+                            dataStoreManager.saveToken(token.toString())
                         }
                     }
                 }

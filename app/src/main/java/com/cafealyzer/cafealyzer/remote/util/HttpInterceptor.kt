@@ -1,6 +1,5 @@
 package com.cafealyzer.cafealyzer.remote.util
 
-import android.util.Log
 import com.cafealyzer.cafealyzer.local.DataStoreManager
 import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
@@ -30,9 +29,8 @@ class HttpInterceptor @Inject constructor(
         if (!token.isNullOrEmpty()) {
             requestBuilder.addHeader(
                 "Authorization",
-                "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Imtlbm5lZHkiLCJleHBpcmVzIjoxNzA0MjI1OTA0Ljk0MTYzOTd9.H7TgTykKcxs9SmGaf0OB0TfkogJeQP7lvmC72d-HDy8"
+                "Bearer $token"
             )
-            Log.d("HttpInterceptor", "Token $token")
         }
         val request = requestBuilder.build()
         return chain.proceed(request)
