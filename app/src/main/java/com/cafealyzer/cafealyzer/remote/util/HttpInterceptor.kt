@@ -11,7 +11,7 @@ import javax.inject.Singleton
 
 @Singleton
 class HttpInterceptor @Inject constructor(
-    private val dataStoreManager: DataStoreManager
+    private val dataStoreManager: DataStoreManager,
 ) : Interceptor {
 
     private val loggingInterceptor = HttpLoggingInterceptor { message ->
@@ -27,8 +27,13 @@ class HttpInterceptor @Inject constructor(
         val requestBuilder = chain.request().newBuilder()
 
         if (!token.isNullOrEmpty()) {
-            requestBuilder.addHeader("Authorization", "Bearer $token")
+            requestBuilder.addHeader(
+                "Authorization",
+                "Bearer $token"
+            )
         }
-        return loggingInterceptor.intercept(chain)
+        val request = requestBuilder.build()
+        return chain.proceed(request)
+        // return loggingInterceptor.intercept(chain)
     }
 }

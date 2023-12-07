@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CustomSearchBar(
+fun SearchBar(
     query: String,
     onQueryChange: (String) -> Unit,
     onSearchPerformed: () -> Unit,
@@ -60,8 +60,8 @@ fun CustomSearchBar(
 }
 @Preview(showBackground = true)
 @Composable
-fun CustomSearchBarPreview() {
-    CustomSearchBar(
+fun SearchBarPreview() {
+    SearchBar(
         query = "",
         onQueryChange = {},
         onSearchPerformed = {}

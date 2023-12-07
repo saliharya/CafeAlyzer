@@ -8,6 +8,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -20,10 +21,12 @@ import com.cafealyzer.cafealyzer.ui.screen.LoginScreen
 import com.cafealyzer.cafealyzer.ui.screen.MapsScreen
 import com.cafealyzer.cafealyzer.ui.screen.ProfileScreen
 import com.cafealyzer.cafealyzer.ui.screen.RegisterScreen
+import com.cafealyzer.cafealyzer.ui.viewmodel.UserViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Navigation(token: String?, navController: NavHostController) {
+    val userViewModel: UserViewModel = hiltViewModel()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
     val isProfileScreen = currentRoute == Screen.Profile.route
@@ -40,11 +43,9 @@ fun Navigation(token: String?, navController: NavHostController) {
             startDestination = if (token != null) Screen.Home.route else Screen.Login.route,
             modifier = Modifier.padding(innerPadding),
             enterTransition = {
-                // you can change whatever you want transition
                 EnterTransition.None
             },
             exitTransition = {
-                // you can change whatever you want transition
                 ExitTransition.None
             }) {
             composable(Screen.Home.route) {
@@ -56,7 +57,13 @@ fun Navigation(token: String?, navController: NavHostController) {
                 HistoryScreen()
             }
             composable(Screen.Profile.route) {
-                ProfileScreen()
+                ProfileScreen(userViewModel = userViewModel, onLogoutClick = {
+                    navController.navigate(Screen.Login.route) {
+                        popUpTo(Screen.Home.route) {
+                            inclusive = true
+                        }
+                    }
+                })
             }
             composable(Screen.Maps.route) {
                 MapsScreen()
