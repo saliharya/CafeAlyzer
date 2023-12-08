@@ -13,7 +13,7 @@ fun EmailTextField(email: String, onEmailChange: (String) -> Unit) {
     OutlinedTextField(
         value = email,
         onValueChange = onEmailChange,
-        label = { Text("Username") },
+        label = { Text("Email") },
         singleLine = true,
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
     )
