@@ -36,7 +36,7 @@ fun LoginScreen(navController: NavHostController) {
 
     LaunchedEffect(isLoginSuccess) {
         if (isLoginSuccess == true) {
-            navController.navigate(Screen.Home.route) {
+            navController.navigate(Screen.Maps.route) {
                 popUpTo(Screen.Login.route) { inclusive = true }
             }
         }

@@ -1,9 +1,10 @@
-package com.cafealyzer.cafealyzer.ui.component.homepage
+package com.cafealyzer.cafealyzer.ui.component.topcafescreen
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.ThumbUp
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -29,7 +30,10 @@ fun BottomBar(
         val currentRoute = navBackStackEntry?.destination?.route
         val navigationItems = listOf(
             NavigationItem(
-                title = "Beranda", icon = Icons.Default.Home, screen = Screen.Home
+                title = "Peta", icon = Icons.Default.Home, screen = Screen.Maps
+            ),
+            NavigationItem(
+                title = "Top Cafe", icon = Icons.Default.ThumbUp, screen = Screen.TopCafe
             ),
             NavigationItem(
                 title = "Riwayat", icon = Icons.Default.Refresh, screen = Screen.History

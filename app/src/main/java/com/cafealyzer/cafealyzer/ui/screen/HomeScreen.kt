@@ -14,13 +14,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import com.cafealyzer.cafealyzer.model.dummyCafeJakarta
 import com.cafealyzer.cafealyzer.model.dummyCafeSumedang
-import com.cafealyzer.cafealyzer.ui.component.homepage.HomeSection
-import com.cafealyzer.cafealyzer.ui.component.homepage.SearchCafeBox
-import com.cafealyzer.cafealyzer.ui.component.homepage.TrendingCafeRow
+import com.cafealyzer.cafealyzer.ui.component.topcafescreen.HomeSection
+import com.cafealyzer.cafealyzer.ui.component.topcafescreen.TrendingCafeRow
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(onCariClick: () -> Unit) {
+fun TopCafeScreen() {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -45,7 +44,6 @@ fun HomeScreen(onCariClick: () -> Unit) {
             HomeSection(
                 title = "Jakarta"
             ) { TrendingCafeRow(dummyCafeJakarta) }
-            SearchCafeBox(onButtonClick = onCariClick)
         }
     }
 }
