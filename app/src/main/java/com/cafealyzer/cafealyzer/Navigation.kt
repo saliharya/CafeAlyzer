@@ -21,12 +21,14 @@ import com.cafealyzer.cafealyzer.ui.screen.MapsScreen
 import com.cafealyzer.cafealyzer.ui.screen.ProfileScreen
 import com.cafealyzer.cafealyzer.ui.screen.RegisterScreen
 import com.cafealyzer.cafealyzer.ui.screen.TopCafeScreen
+import com.cafealyzer.cafealyzer.ui.viewmodel.MapsViewModel
 import com.cafealyzer.cafealyzer.ui.viewmodel.UserViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Navigation(token: String?, navController: NavHostController) {
     val userViewModel: UserViewModel = hiltViewModel()
+    val mapsViewModel: MapsViewModel = hiltViewModel()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
     val isProfileScreen = currentRoute == Screen.Profile.route
@@ -46,7 +48,7 @@ fun Navigation(token: String?, navController: NavHostController) {
             modifier = Modifier.padding(innerPadding)
         ) {
             composable(Screen.Maps.route) {
-                MapsScreen()
+                MapsScreen(mapsViewModel = mapsViewModel)
             }
             composable(Screen.History.route) {
                 HistoryScreen(navController)
