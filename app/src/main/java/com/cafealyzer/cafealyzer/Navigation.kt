@@ -13,8 +13,10 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.cafealyzer.cafealyzer.model.generateDummyReviews
 import com.cafealyzer.cafealyzer.ui.component.homepage.BottomBar
 import com.cafealyzer.cafealyzer.ui.navigation.Screen
+import com.cafealyzer.cafealyzer.ui.screen.HistoryDetailScreen
 import com.cafealyzer.cafealyzer.ui.screen.HistoryScreen
 import com.cafealyzer.cafealyzer.ui.screen.HomeScreen
 import com.cafealyzer.cafealyzer.ui.screen.LoginScreen
@@ -54,7 +56,7 @@ fun Navigation(token: String?, navController: NavHostController) {
                 })
             }
             composable(Screen.History.route) {
-                HistoryScreen()
+                HistoryScreen(navController)
             }
             composable(Screen.Profile.route) {
                 ProfileScreen(userViewModel = userViewModel, onLogoutClick = {
@@ -73,6 +75,13 @@ fun Navigation(token: String?, navController: NavHostController) {
             }
             composable(Screen.Register.route) {
                 RegisterScreen(navController = navController)
+            }
+            composable("${Screen.HistoryDetail.route}/{reviewId}") { backStackEntry ->
+                val reviewId = backStackEntry.arguments?.getString("reviewId")?.toIntOrNull()
+                val review = generateDummyReviews().find { it.id == reviewId }
+                if (review != null) {
+                    HistoryDetailScreen(review)
+                }
             }
         }
     }
