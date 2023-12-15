@@ -20,6 +20,7 @@ import com.cafealyzer.cafealyzer.ui.screen.LoginScreen
 import com.cafealyzer.cafealyzer.ui.screen.MapsScreen
 import com.cafealyzer.cafealyzer.ui.screen.ProfileScreen
 import com.cafealyzer.cafealyzer.ui.screen.RegisterScreen
+import com.cafealyzer.cafealyzer.ui.screen.SearchScreen
 import com.cafealyzer.cafealyzer.ui.screen.TopCafeScreen
 import com.cafealyzer.cafealyzer.ui.viewmodel.MapsViewModel
 import com.cafealyzer.cafealyzer.ui.viewmodel.UserViewModel
@@ -48,7 +49,7 @@ fun Navigation(token: String?, navController: NavHostController) {
             modifier = Modifier.padding(innerPadding)
         ) {
             composable(Screen.Maps.route) {
-                MapsScreen(mapsViewModel = mapsViewModel)
+                MapsScreen(mapsViewModel = mapsViewModel, navController = navController)
             }
             composable(Screen.History.route) {
                 HistoryScreen(navController)
@@ -64,6 +65,17 @@ fun Navigation(token: String?, navController: NavHostController) {
             }
             composable(Screen.TopCafe.route) {
                 TopCafeScreen()
+            }
+            composable(Screen.Search.route) {
+                SearchScreen(mapsViewModel) { selectedCafe ->
+                    mapsViewModel.setSelectedCafe(selectedCafe)
+                    navController.navigate(Screen.Maps.route) {
+                        launchSingleTop = true
+                        popUpTo(Screen.Search.route) {
+                            inclusive = true
+                        }
+                    }
+                }
             }
             composable(Screen.Login.route) {
                 LoginScreen(navController = navController)

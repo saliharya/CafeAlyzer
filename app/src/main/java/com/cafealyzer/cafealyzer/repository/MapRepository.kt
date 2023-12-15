@@ -1,5 +1,6 @@
 package com.cafealyzer.cafealyzer.repository
 
+import com.cafealyzer.cafealyzer.remote.response.CafeDetailResponse
 import com.cafealyzer.cafealyzer.remote.response.FindCafeResponse
 import com.cafealyzer.cafealyzer.remote.response.NearbyCafeResponse
 import com.cafealyzer.cafealyzer.remote.service.MapService
@@ -15,5 +16,9 @@ class MapRepository @Inject constructor(private val mapService: MapService) {
 
     fun findCafe(input: String?, location: String?, radius: String?): Call<FindCafeResponse> {
         return mapService.findCafe(input, location, radius)
+    }
+
+    fun getCafeDetail(placeId: String): Call<CafeDetailResponse> {
+        return mapService.getCafeDetail(placeId)
     }
 }

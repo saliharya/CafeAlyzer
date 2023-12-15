@@ -3,28 +3,26 @@ package com.cafealyzer.cafealyzer.ui.screen
 import android.content.ContentValues.TAG
 import android.content.pm.PackageManager
 import android.util.Log
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -33,14 +31,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
 import com.cafealyzer.cafealyzer.R
-import com.cafealyzer.cafealyzer.remote.response.FindCafeResult
 import com.cafealyzer.cafealyzer.ui.activity.MainActivity
+import com.cafealyzer.cafealyzer.ui.navigation.Screen
 import com.cafealyzer.cafealyzer.ui.viewmodel.MapsViewModel
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.CameraPosition
@@ -52,8 +51,13 @@ import com.google.maps.android.compose.rememberMarkerState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MapsScreen(mapsViewModel: MapsViewModel = viewModel()) {
+fun MapsScreen(mapsViewModel: MapsViewModel = viewModel(), navController: NavHostController) {
+    var cafeAnda by remember { mutableStateOf("") }
+    var cafeKompetitor by remember { mutableStateOf("") }
+    var savedCafesCount by remember { mutableIntStateOf(0) }
+
     val nearbyCafeData by mapsViewModel.nearbyCafeData.observeAsState()
+    val selectedCafe by mapsViewModel.selectedCafe.observeAsState()
     val isLoading by mapsViewModel.isLoading.observeAsState()
 
     val context = LocalContext.current
@@ -101,6 +105,19 @@ fun MapsScreen(mapsViewModel: MapsViewModel = viewModel()) {
             Log.e(TAG, "SecurityException: ${securityException.message}")
         }
     }
+
+//    LaunchedEffect(cafeAnda, cafeKompetitor) {
+//        savedCafesCount = 0
+//        savedCafesCount += if (cafeAnda.isNotBlank()) 1 else 0
+//        savedCafesCount += if (cafeKompetitor.isNotBlank()) 1 else 0
+//    }
+
+    fun reverseCafe() {
+        val temp = cafeAnda
+        cafeAnda = cafeKompetitor
+        cafeKompetitor = temp
+    }
+
     when (PackageManager.PERMISSION_GRANTED) {
         ContextCompat.checkSelfPermission(
             context, android.Manifest.permission.ACCESS_FINE_LOCATION
@@ -117,14 +134,6 @@ fun MapsScreen(mapsViewModel: MapsViewModel = viewModel()) {
             )
         }
     }
-    var cafeAnda by remember { mutableStateOf("") }
-    var cafeKompetitor by remember { mutableStateOf("") }
-
-    fun reverseCafe() {
-        val temp = cafeAnda
-        cafeAnda = cafeKompetitor
-        cafeKompetitor = temp
-    }
 
     if (isLoading == true) {
         Box(
@@ -138,53 +147,24 @@ fun MapsScreen(mapsViewModel: MapsViewModel = viewModel()) {
     } else {
         nearbyCafeData?.let {
             Column {
-                var searchText by remember { mutableStateOf("") }
-
-                OutlinedTextField(
-                    value = searchText,
-                    onValueChange = {
-                        searchText = it
-                    },
-                    label = { Text("Cari Cafe") },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(4.dp),
-                    keyboardOptions = KeyboardOptions.Default.copy(
-                        imeAction = ImeAction.Done
-                    ),
-                    keyboardActions = KeyboardActions(
-                        onDone = {
-                            mapsViewModel.findCafe(searchText)
-                        }
-                    )
-                )
-
-                mapsViewModel.findCafeData.observeAsState().value?.let { cafeResults ->
-                    if (cafeResults.isNotEmpty()) {
-                        CafeSearchResults(cafeResults = cafeResults) { selectedCafe ->
-                            cameraPositionState.position = CameraPosition.fromLatLngZoom(
-                                LatLng(
-                                    selectedCafe.findCafeGeometry.location.lat,
-                                    selectedCafe.findCafeGeometry.location.lng
-                                ),
-                                18f
-                            )
-                        }
-                    }
-                }
-
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(4.dp)
                 ) {
-                    TextField(
+                    OutlinedTextField(
                         value = cafeAnda,
-                        onValueChange = { cafeAnda = it },
+                        onValueChange = { },
                         label = { Text("Cafe Anda") },
+                        singleLine = true,
                         modifier = Modifier
                             .weight(1f),
-                        readOnly = false
+                        enabled = false,
+                        colors = TextFieldDefaults.outlinedTextFieldColors(
+                            disabledBorderColor = Color.LightGray,
+                            disabledLabelColor = Color.LightGray,
+                            disabledTextColor = Color.LightGray,
+                        )
                     )
                     IconButton(
                         onClick = {
@@ -206,13 +186,19 @@ fun MapsScreen(mapsViewModel: MapsViewModel = viewModel()) {
                         .fillMaxWidth()
                         .padding(4.dp)
                 ) {
-                    TextField(
+                    OutlinedTextField(
                         value = cafeKompetitor,
-                        onValueChange = { cafeKompetitor = it },
+                        onValueChange = { },
                         label = { Text("Cafe Kompetitor") },
+                        singleLine = true,
                         modifier = Modifier
                             .weight(1f),
-                        readOnly = false
+                        enabled = false,
+                        colors = TextFieldDefaults.outlinedTextFieldColors(
+                            disabledBorderColor = Color.LightGray,
+                            disabledLabelColor = Color.LightGray,
+                            disabledTextColor = Color.LightGray,
+                        )
                     )
                     IconButton(
                         onClick = { reverseCafe() },
@@ -225,6 +211,40 @@ fun MapsScreen(mapsViewModel: MapsViewModel = viewModel()) {
                         )
                     }
                 }
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 4.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Button(
+                        onClick = {
+                            navController.navigate(Screen.Search.route) {
+                            }
+                        },
+                        modifier = Modifier.padding(4.dp)
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_search),
+                            contentDescription = "Cari Cafe"
+                        )
+                        Text("Cari Cafe", fontWeight = FontWeight.Bold)
+                    }
+
+                    Button(
+                        onClick = {},
+                        modifier = Modifier.padding(4.dp)
+                    ) {
+                        val bandingText = if (savedCafesCount > 0) {
+                            "Banding ($savedCafesCount/2)"
+                        } else {
+                            "Banding 0/0"
+                        }
+
+                        Text(bandingText, fontWeight = FontWeight.Bold)
+                    }
+                }
+
                 GoogleMap(
                     modifier = Modifier.fillMaxSize(),
                     cameraPositionState = cameraPositionState,
@@ -235,8 +255,30 @@ fun MapsScreen(mapsViewModel: MapsViewModel = viewModel()) {
                                 cafe.nearbyCafeGeometry.location.lat,
                                 cafe.nearbyCafeGeometry.location.lng
                             ),
-                            title = "${cafe.name} - ${cafe.rating}"
+                            title = "${cafe.name} - ${cafe.rating}",
+                            placeId = cafe.placeId,
+                            mapsViewModel = mapsViewModel
                         )
+                    }
+                    selectedCafe?.let { cafe ->
+                        val cafeLatLng = LatLng(
+                            cafe.findCafeGeometry.location.lat,
+                            cafe.findCafeGeometry.location.lng
+                        )
+                        CafeMarkers(
+                            position = cafeLatLng,
+                            title = "${cafe.name} - ${cafe.rating}",
+                            placeId = cafe.placeId,
+                            mapsViewModel = mapsViewModel
+                        )
+                        cameraPositionState.position =
+                            CameraPosition.fromLatLngZoom(
+                                LatLng(
+                                    cafe.findCafeGeometry.location.lat,
+                                    cafe.findCafeGeometry.location.lng
+                                ),
+                                18f
+                            )
                     }
                 }
             }
@@ -245,26 +287,20 @@ fun MapsScreen(mapsViewModel: MapsViewModel = viewModel()) {
 }
 
 @Composable
-fun CafeSearchResults(cafeResults: List<FindCafeResult>, onCafeSelected: (FindCafeResult) -> Unit) {
-    LazyColumn {
-        items(cafeResults) { cafe ->
-            Text(
-                text = cafe.name,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable { onCafeSelected(cafe) }
-                    .padding(8.dp)
-            )
-        }
-    }
-}
-
-@Composable
-fun CafeMarkers(position: LatLng, title: String) {
-    val markerstate = rememberMarkerState(null, position)
+fun CafeMarkers(
+    position: LatLng,
+    title: String,
+    placeId: String,
+    mapsViewModel: MapsViewModel = viewModel(),
+) {
+    val markerstate = rememberMarkerState(title, position)
     Marker(
         state = markerstate,
         title = title,
+        onInfoWindowClick = {
+            Log.d(TAG, "PLACE ID ADALAH $placeId")
+            mapsViewModel.getCafeDetail(placeId)
+        }
     )
     markerstate.showInfoWindow()
 }

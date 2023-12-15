@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.cafealyzer.cafealyzer.remote.response.CafeDetailResponse
 import com.cafealyzer.cafealyzer.remote.response.FindCafeResponse
 import com.cafealyzer.cafealyzer.remote.response.FindCafeResult
 import com.cafealyzer.cafealyzer.remote.response.NearbyCafeResponse
@@ -30,8 +31,16 @@ class MapsViewModel @Inject constructor(
     private val _findCafeData = MutableLiveData<List<FindCafeResult>>()
     val findCafeData: LiveData<List<FindCafeResult>> get() = _findCafeData
 
+    private val _selectedCafe = MutableLiveData<FindCafeResult>()
+    val selectedCafe: LiveData<FindCafeResult> get() = _selectedCafe
+
+    private val _cafeDetail = MutableLiveData<CafeDetailResponse>()
+    val cafeDetail: LiveData<CafeDetailResponse> get() = _cafeDetail
+
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> get() = _isLoading
+
+
     fun fetchNearbyCafeData(): LiveData<NearbyCafeResponse> {
         val keyword = "cafe"
         val location = "$latitude,$longitude"
@@ -95,5 +104,38 @@ class MapsViewModel @Inject constructor(
                 }
             })
         return liveDataResponse
+    }
+
+    fun getCafeDetail(placeId: String): LiveData<CafeDetailResponse> {
+        _isLoading.value = true
+        val liveDataResponse = MutableLiveData<CafeDetailResponse>()
+        mapRepository.getCafeDetail(placeId)
+            .enqueue(object : Callback<CafeDetailResponse> {
+                override fun onResponse(
+                    call: Call<CafeDetailResponse>,
+                    response: Response<CafeDetailResponse>,
+                ) {
+                    _isLoading.value = false
+                    if (response.isSuccessful) {
+                        _cafeDetail.value = response.body()
+                        Log.d(
+                            "MapsViewModel",
+                            "Cafe Detail retrieved successfully ${_cafeDetail.value?.result?.reviews}"
+                        )
+                    } else {
+                        Log.e("MapsViewModel", "Unsuccessful response: ${response.code()}")
+                    }
+                }
+
+                override fun onFailure(call: Call<CafeDetailResponse>, t: Throwable) {
+                    _isLoading.value = false
+                    Log.e("MapsViewModel", "Network request failure: ${t.message}")
+                }
+            })
+        return liveDataResponse
+    }
+
+    fun setSelectedCafe(cafe: FindCafeResult) {
+        _selectedCafe.value = cafe
     }
 }
