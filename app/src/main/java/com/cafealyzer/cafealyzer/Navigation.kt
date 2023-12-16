@@ -14,14 +14,17 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import com.cafealyzer.cafealyzer.model.generateDummyReviews
 import com.cafealyzer.cafealyzer.ui.component.topcafescreen.BottomBar
 import com.cafealyzer.cafealyzer.ui.navigation.Screen
+import com.cafealyzer.cafealyzer.ui.screen.CompareCafeScreen
 import com.cafealyzer.cafealyzer.ui.screen.HistoryDetailScreen
 import com.cafealyzer.cafealyzer.ui.screen.HistoryScreen
 import com.cafealyzer.cafealyzer.ui.screen.LoginScreen
 import com.cafealyzer.cafealyzer.ui.screen.MapsScreen
 import com.cafealyzer.cafealyzer.ui.screen.ProfileScreen
 import com.cafealyzer.cafealyzer.ui.screen.RegisterScreen
+import com.cafealyzer.cafealyzer.ui.screen.ReviewScreen
 import com.cafealyzer.cafealyzer.ui.screen.SearchScreen
 import com.cafealyzer.cafealyzer.ui.screen.TopCafeScreen
+import com.cafealyzer.cafealyzer.ui.viewmodel.HistoryViewModel
 import com.cafealyzer.cafealyzer.ui.viewmodel.MapsViewModel
 import com.cafealyzer.cafealyzer.ui.viewmodel.UserViewModel
 
@@ -30,6 +33,7 @@ import com.cafealyzer.cafealyzer.ui.viewmodel.UserViewModel
 fun Navigation(token: String?, navController: NavHostController) {
     val userViewModel: UserViewModel = hiltViewModel()
     val mapsViewModel: MapsViewModel = hiltViewModel()
+    val historyViewModel: HistoryViewModel = hiltViewModel()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
     val isProfileScreen = currentRoute == Screen.Profile.route
@@ -52,7 +56,7 @@ fun Navigation(token: String?, navController: NavHostController) {
                 MapsScreen(mapsViewModel = mapsViewModel, navController = navController)
             }
             composable(Screen.History.route) {
-                HistoryScreen(navController)
+                HistoryScreen(historyViewModel, navController)
             }
             composable(Screen.Profile.route) {
                 ProfileScreen(userViewModel = userViewModel, onLogoutClick = {
@@ -84,11 +88,29 @@ fun Navigation(token: String?, navController: NavHostController) {
                 RegisterScreen(navController = navController)
             }
             composable("${Screen.HistoryDetail.route}/{reviewId}") { backStackEntry ->
-                val reviewId = backStackEntry.arguments?.getString("reviewId")?.toIntOrNull()
-                val review = generateDummyReviews().find { it.id == reviewId }
+                val reviewId = backStackEntry.arguments?.getString("reviewId")
+                val review = historyViewModel.historyData.value?.find { it.id == reviewId }
                 if (review != null) {
                     HistoryDetailScreen(review)
                 }
+            }
+            composable("${Screen.ReviewCafe.route}/{reviewId}") { backStackEntry ->
+                val reviewId = backStackEntry.arguments?.getString("reviewId")?.toIntOrNull()
+                val review = generateDummyReviews().find { it.id == reviewId }
+                if (review != null) {
+                    ReviewScreen(review)
+                }
+            }
+            composable("${Screen.CompareCafe.route}/{cafeName1}/{cafeName2}") { backStackEntry ->
+                val cafeName1 = backStackEntry.arguments?.getString("cafeName1") ?: ""
+                val cafeName2 = backStackEntry.arguments?.getString("cafeName2") ?: ""
+
+                CompareCafeScreen(
+                    mapsViewModel = mapsViewModel,
+                    cafeName1 = cafeName1,
+                    cafeName2 = cafeName2,
+                    navController = navController
+                )
             }
         }
     }

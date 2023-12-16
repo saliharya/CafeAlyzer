@@ -37,6 +37,12 @@ class MapsViewModel @Inject constructor(
     private val _cafeDetail = MutableLiveData<CafeDetailResponse>()
     val cafeDetail: LiveData<CafeDetailResponse> get() = _cafeDetail
 
+    private val _cafeDetail2 = MutableLiveData<CafeDetailResponse>()
+    val cafeDetail2: LiveData<CafeDetailResponse> get() = _cafeDetail2
+
+    private val _cafeList = MutableLiveData<List<CafeData>>(emptyList())
+    val cafeList: LiveData<List<CafeData>> get() = _cafeList
+
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> get() = _isLoading
 
@@ -135,7 +141,55 @@ class MapsViewModel @Inject constructor(
         return liveDataResponse
     }
 
+    fun getCafeDetail2(placeId2: String): LiveData<CafeDetailResponse> {
+        _isLoading.value = true
+        val liveDataResponse = MutableLiveData<CafeDetailResponse>()
+        mapRepository.getCafeDetail(placeId2)
+            .enqueue(object : Callback<CafeDetailResponse> {
+                override fun onResponse(
+                    call: Call<CafeDetailResponse>,
+                    response: Response<CafeDetailResponse>,
+                ) {
+                    _isLoading.value = false
+                    if (response.isSuccessful) {
+                        _cafeDetail2.value = response.body()
+                        Log.d(
+                            "MapsViewModel",
+                            "Cafe Detail retrieved successfully ${_cafeDetail2.value?.result?.reviews}"
+                        )
+                    } else {
+                        Log.e("MapsViewModel", "Unsuccessful response: ${response.code()}")
+                    }
+                }
+
+                override fun onFailure(call: Call<CafeDetailResponse>, t: Throwable) {
+                    _isLoading.value = false
+                    Log.e("MapsViewModel", "Network request failure: ${t.message}")
+                }
+            })
+        return liveDataResponse
+    }
+
     fun setSelectedCafe(cafe: FindCafeResult) {
         _selectedCafe.value = cafe
     }
+
+    fun reverseCafeList() {
+        val temp = _cafeList.value?.reversed()
+        _cafeList.value = temp
+    }
+
+    fun clearCafeList() {
+        _cafeList.value = emptyList()
+    }
+
+    fun addCafeToList(title: String, placeId: String) {
+        val newCafe = CafeData(title, placeId)
+        _cafeList.value = (_cafeList.value ?: emptyList()) + newCafe
+    }
+
+    data class CafeData(
+        val title: String,
+        val placeId: String,
+    )
 }
