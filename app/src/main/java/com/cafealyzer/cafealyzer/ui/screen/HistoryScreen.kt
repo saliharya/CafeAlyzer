@@ -25,10 +25,11 @@ import com.cafealyzer.cafealyzer.ui.component.historyscreen.CafeReviewCard
 import com.cafealyzer.cafealyzer.ui.navigation.Screen
 import com.cafealyzer.cafealyzer.ui.viewmodel.HistoryViewModel
 
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HistoryScreen(historyViewModel: HistoryViewModel = viewModel(), navController: NavController) {
-    val historyData by historyViewModel.historyData.observeAsState()
+    val historyData by historyViewModel.historyData.observeAsState(emptyList())
     val isLoading by historyViewModel.isLoading.observeAsState()
 
     LaunchedEffect(Unit) {
@@ -54,25 +55,25 @@ fun HistoryScreen(historyViewModel: HistoryViewModel = viewModel(), navControlle
                 CircularProgressIndicator(color = Color.Red)
             }
         } else {
-            historyData?.let {
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(innerPadding)
-                ) {
-                    items(it) { review ->
-                        CafeReviewCard(
-                            review = review,
-                            onDetailClick = {
-                                navController.navigate("${Screen.HistoryDetail.route}/${review.id}")
-                            },
-                            onDeleteClick = {
-                                // Delete Review
-                            }
-                        )
-                    }
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(innerPadding)
+            ) {
+                items(historyData) { review ->
+                    CafeReviewCard(
+                        review = review,
+                        onDetailClick = {
+                            navController.navigate("${Screen.HistoryDetail.route}/${review.id}")
+                        },
+                        onDeleteClick = {
+                            historyViewModel.deleteHistory(review.id)
+                            historyViewModel.getHistory()
+                        }
+                    )
                 }
             }
         }
     }
 }
+

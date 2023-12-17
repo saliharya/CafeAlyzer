@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import com.cafealyzer.cafealyzer.remote.request.HistoryRequest
 import com.cafealyzer.cafealyzer.remote.response.HistoryResponse
 import com.cafealyzer.cafealyzer.remote.response.ReviewData
+import com.cafealyzer.cafealyzer.remote.service.DeleteHistoryResponse
 import com.cafealyzer.cafealyzer.repository.HistoryRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import retrofit2.Call
@@ -93,4 +94,31 @@ class HistoryViewModel @Inject constructor(private val historyRepository: Histor
             })
         return liveDataResponse
     }
+
+    fun deleteHistory(historyId: String): LiveData<Boolean> {
+        _isLoading.value = true
+        val liveDataResponse = MutableLiveData<Boolean>()
+        historyRepository.deleteHistory(historyId)
+            .enqueue(object : Callback<DeleteHistoryResponse> {
+
+                override fun onResponse(
+                    call: Call<DeleteHistoryResponse>,
+                    response: Response<DeleteHistoryResponse>
+                ) {
+                    _isLoading.value = false
+                    _historySuccess.value = response.isSuccessful
+                    liveDataResponse.value = response.isSuccessful
+                    Log.d("HistoryViewModel", "History deleted successfully")
+                }
+
+                override fun onFailure(call: Call<DeleteHistoryResponse>, t: Throwable) {
+                    _historySuccess.value = false
+                    _isLoading.value = false
+                    liveDataResponse.value = false
+                    Log.e("HistoryViewModel", "Network request failure: ${t.message}")
+                }
+            })
+        return liveDataResponse
+    }
+
 }
