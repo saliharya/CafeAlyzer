@@ -1,6 +1,8 @@
 package com.cafealyzer.cafealyzer.di
 
 import com.cafealyzer.cafealyzer.remote.service.AuthService
+import com.cafealyzer.cafealyzer.remote.service.HistoryService
+import com.cafealyzer.cafealyzer.remote.service.MapService
 import com.cafealyzer.cafealyzer.remote.service.UserService
 import com.cafealyzer.cafealyzer.remote.util.Constants
 import com.cafealyzer.cafealyzer.remote.util.HttpInterceptor
@@ -46,5 +48,17 @@ object RemoteModule {
     @Singleton
     fun provideUserService(retrofit: Retrofit): UserService {
         return retrofit.create(UserService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideMapService(retrofit: Retrofit): MapService {
+        return retrofit.create(MapService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideHistory(retrofit: Retrofit): HistoryService {
+        return retrofit.create(HistoryService::class.java)
     }
 }

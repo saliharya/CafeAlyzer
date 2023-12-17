@@ -45,7 +45,7 @@ fun SearchBar(
         singleLine = true,
         shape = RoundedCornerShape(24.dp),
         placeholder = {
-            Text("Search Cafe")
+            Text("Cari Cafe Anda atau Kompetitor")
         },
         colors = TextFieldDefaults.textFieldColors(
             unfocusedIndicatorColor = Color.Transparent,

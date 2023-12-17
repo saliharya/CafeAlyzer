@@ -18,10 +18,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.cafealyzer.cafealyzer.model.CafeReview
+import com.cafealyzer.cafealyzer.remote.response.ReviewData
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 @Composable
-fun CafeReviewCard(review: CafeReview, onDetailClick: () -> Unit, onDeleteClick: () -> Unit) {
+fun CafeReviewCard(review: ReviewData, onDetailClick: () -> Unit, onDeleteClick: () -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -33,8 +36,9 @@ fun CafeReviewCard(review: CafeReview, onDetailClick: () -> Unit, onDeleteClick:
                 .fillMaxWidth()
         ) {
             CafeInfo(review = review)
+            val reviewDate = review.date.toDate()
             Text(
-                text = "Tanggal: ${review.date}",
+                text = "Tanggal: ${reviewDate.toFormattedString("dd-MM-yyyy HH:mm:ss")}",
                 modifier = Modifier
                     .padding(top = 8.dp)
             )
@@ -54,10 +58,10 @@ fun CafeReviewCard(review: CafeReview, onDetailClick: () -> Unit, onDeleteClick:
 }
 
 @Composable
-fun CafeInfo(review: CafeReview) {
-    CafeColumn(text = "Cafe Anda:", value = review.cafeAnda)
+fun CafeInfo(review: ReviewData) {
+    CafeColumn(text = "Cafe Anda:", value = review.cafeUser)
     Spacer(modifier = Modifier.height(8.dp))
-    CafeColumn(text = "Cafe Kompetitor:", value = review.cafeKompetitor)
+    CafeColumn(text = "Cafe Kompetitor:", value = review.cafeCompetitor)
 }
 
 @Composable
@@ -76,4 +80,14 @@ fun CafeColumn(text: String, value: String) {
             Text(text = value)
         }
     }
+}
+
+fun String.toDate(): Date {
+    val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSS", Locale.getDefault())
+    return dateFormat.parse(this) ?: Date()
+}
+
+fun Date.toFormattedString(pattern: String): String {
+    val dateFormat = SimpleDateFormat(pattern, Locale.getDefault())
+    return dateFormat.format(this)
 }

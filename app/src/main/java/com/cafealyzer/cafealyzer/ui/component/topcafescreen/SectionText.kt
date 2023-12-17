@@ -1,4 +1,4 @@
-package com.cafealyzer.cafealyzer.ui.component.homepage
+package com.cafealyzer.cafealyzer.ui.component.topcafescreen
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
