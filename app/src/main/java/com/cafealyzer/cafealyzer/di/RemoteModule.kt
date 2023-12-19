@@ -58,7 +58,7 @@ object RemoteModule {
 
     @Provides
     @Singleton
-    fun provideHistory(retrofit: Retrofit): HistoryService {
+    fun provideHistoryService(retrofit: Retrofit): HistoryService {
         return retrofit.create(HistoryService::class.java)
     }
 }
