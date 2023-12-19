@@ -16,15 +16,32 @@ import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
+    primary = PrimaryBrown,
+    onPrimary = BgWHite,
+    secondary = SecondaryBrown,
+    secondaryContainer = coklat,
+    onSecondaryContainer = coklat2,
+    surface = SrfcDark,
+    onSurface = PrimaryBrown,
+    onSurfaceVariant = LightBrown,
+    background = BgDark,
+    onBackground = OnBGDark,
+    tertiary = LightBrown
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40
+    primary = PrimaryBrown,
+    onPrimary = BgWHite,
+    secondary = PrimaryBrown,
+    secondaryContainer = coklat,
+    onSecondaryContainer = coklat2,
+    surface = SrfcLightBrown,
+    onSurface = PrimaryBrown,
+    onSurfaceVariant = LighterBrown,
+    background = BgWHite,
+    onBackground = OnBgWhite,
+    inversePrimary = LightBrown,
+
 
     /* Other default colors to override
     background = Color(0xFFFFFBFE),
@@ -40,9 +57,8 @@ private val LightColorScheme = lightColorScheme(
 @Composable
 fun CafeAlyzerTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
-    content: @Composable () -> Unit
+    dynamicColor: Boolean = false,
+    content: @Composable () -> Unit,
 ) {
     val colorScheme = when {
         dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
@@ -53,7 +69,9 @@ fun CafeAlyzerTheme(
         darkTheme -> DarkColorScheme
         else -> LightColorScheme
     }
+
     val view = LocalView.current
+
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window

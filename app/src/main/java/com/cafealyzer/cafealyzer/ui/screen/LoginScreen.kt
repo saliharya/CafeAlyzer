@@ -18,16 +18,16 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.cafealyzer.cafealyzer.ui.component.authscreen.AppIcon
-import com.cafealyzer.cafealyzer.ui.component.authscreen.EmailTextField
 import com.cafealyzer.cafealyzer.ui.component.authscreen.LoginButton
 import com.cafealyzer.cafealyzer.ui.component.authscreen.PasswordTextField
 import com.cafealyzer.cafealyzer.ui.component.authscreen.RegisterSection
+import com.cafealyzer.cafealyzer.ui.component.authscreen.UsernameTextField
 import com.cafealyzer.cafealyzer.ui.navigation.Screen
 import com.cafealyzer.cafealyzer.ui.viewmodel.LoginViewModel
 
 @Composable
 fun LoginScreen(navController: NavHostController) {
-    var email by remember { mutableStateOf("") }
+    var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
     val loginViewModel: LoginViewModel = hiltViewModel()
@@ -50,12 +50,12 @@ fun LoginScreen(navController: NavHostController) {
     ) {
         AppIcon()
         Spacer(modifier = Modifier.height(16.dp))
-        EmailTextField(email = email) { email = it }
+        UsernameTextField(username = username, onUsernameChange = { username = it })
         Spacer(modifier = Modifier.height(16.dp))
         PasswordTextField(password = password) { password = it }
         Spacer(modifier = Modifier.height(16.dp))
         LoginButton(isLoading = isLoading) {
-            loginViewModel.loginUser(email, password)
+            loginViewModel.loginUser(username, password)
         }
         Spacer(modifier = Modifier.height(16.dp))
         RegisterSection(navController = navController)
