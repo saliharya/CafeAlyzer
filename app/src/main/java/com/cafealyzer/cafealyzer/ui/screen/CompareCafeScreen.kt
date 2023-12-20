@@ -11,7 +11,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -23,7 +25,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -54,7 +55,13 @@ fun CompareCafeScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = "Detail Cafe Yang Akan Dibanding") },
+                title = {
+                    Text(
+                        text = "Detail Cafe Yang Akan Dibanding",
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold,
+                    )
+                },
             )
         }
     ) { innerPadding ->
@@ -62,8 +69,8 @@ fun CompareCafeScreen(
             modifier = Modifier.padding(innerPadding)
         ) {
             item {
-                CompareCafeCard("Cafe Anda", cafeName1, cafeDetail1)
-                CompareCafeCard("Cafe Kompetitor", cafeName2, cafeDetail2)
+                CompareCafeCard("Cafe Anda :", cafeName1, cafeDetail1)
+                CompareCafeCard("Cafe Kompetitor :", cafeName2, cafeDetail2)
             }
             item(reviewList) {
                 Button(
@@ -83,12 +90,15 @@ fun CompareCafeScreen(
 @Composable
 fun CompareCafeCard(title: String, name: String, cafeDetail: CafeDetailResponse?) {
     Card(
-        modifier = Modifier.padding(16.dp)
+        modifier = Modifier.padding(16.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.secondaryContainer,
+        ),
     ) {
-        Text(text = title, modifier = Modifier.padding(8.dp))
+        Text(text = title, modifier = Modifier.padding(start = 8.dp, top = 8.dp))
         Text(
             text = name,
-            modifier = Modifier.padding(8.dp),
+            modifier = Modifier.padding(start = 8.dp, bottom = 8.dp),
             fontWeight = FontWeight.Bold,
             style = androidx.compose.ui.text.TextStyle(fontSize = 20.sp)
         )
@@ -127,7 +137,7 @@ fun ReviewItem(review: CafeReviewsItem) {
             .fillMaxWidth()
             .padding(8.dp)
             .clip(shape = RoundedCornerShape(8.dp))
-            .border(1.dp, Color.Red.copy(alpha = 0.5F), RoundedCornerShape(8.dp))
+            .border(1.dp, MaterialTheme.colorScheme.onSecondaryContainer, RoundedCornerShape(8.dp))
             .clickable { expanded = !expanded }
     ) {
         Text(

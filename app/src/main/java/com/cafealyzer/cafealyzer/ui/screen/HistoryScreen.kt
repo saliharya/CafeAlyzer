@@ -1,13 +1,15 @@
 package com.cafealyzer.cafealyzer.ui.screen
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -17,11 +19,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.text.font.FontWeight
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.cafealyzer.cafealyzer.ui.component.historyscreen.CafeReviewCard
+import com.cafealyzer.cafealyzer.ui.component.shimmer.HistoryScreenShimmering
 import com.cafealyzer.cafealyzer.ui.navigation.Screen
 import com.cafealyzer.cafealyzer.ui.viewmodel.HistoryViewModel
 
@@ -40,7 +42,10 @@ fun HistoryScreen(historyViewModel: HistoryViewModel = viewModel(), navControlle
         topBar = {
             TopAppBar(
                 title = {
-                    Text(text = "History Review Anda")
+                    Text(
+                        text = "Riwayat Review Cafe Anda",
+                        fontWeight = FontWeight.Bold
+                    )
                 }
             )
         }
@@ -49,12 +54,26 @@ fun HistoryScreen(historyViewModel: HistoryViewModel = viewModel(), navControlle
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(16.dp),
+                    .padding(innerPadding),
                 contentAlignment = Alignment.Center
             ) {
-                CircularProgressIndicator(color = Color.Red)
+                HistoryScreenShimmering()
             }
         } else {
+            if (historyData.isEmpty()) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(innerPadding),
+                    verticalArrangement = Arrangement.Center, // Center vertically
+                    horizontalAlignment = Alignment.CenterHorizontally // Center horizontally
+                ) {
+                    Text(
+                        text = "Belum Ada Review Cafe Yang Disimpan",
+                        color = MaterialTheme.colorScheme.primary,
+                    )
+                }
+            }
             LazyColumn(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -69,6 +88,7 @@ fun HistoryScreen(historyViewModel: HistoryViewModel = viewModel(), navControlle
                         onDeleteClick = {
                             historyViewModel.deleteHistory(review.id)
                             historyViewModel.getHistory()
+                            navController.navigate(Screen.Maps.route)
                         }
                     )
                 }
